@@ -102,7 +102,7 @@ wszyscy_pacjenci: list =[
     {"imię: ": "Kacper", "nazwisko: ": "Andrzej", "przychodnia: ": "Marvit Wyszków", "pochodzenie: ": "Niegów"},
     {"imię: ": "Adrianna", "nazwisko: ": "Urszula", "przychodnia: ": "Marvit Wyszków", "pochodzenie: ": "Natalin_(powiat_wyszkowski)"},
     {"imię: ": "Urszula", "nazwisko: ": "Adrianna", "przychodnia: ": "Marvit Wyszków", "pochodzenie: ": "Trzcianka_(powiat_wyszkowski)"},
-    {"imię: ": "Jakub", "nazwisko: ": "Piotr", "przychodnia: ": "Prima Tłuszcz", "pochodzenie: ": "Tłuszcz_(miasto)},
+    {"imię: ": "Jakub", "nazwisko: ": "Piotr", "przychodnia: ": "Prima Tłuszcz", "pochodzenie: ": "Tłuszcz_(miasto)"},
     {"imię: ": "Piotr", "nazwisko: ": "Jakub", "przychodnia: ": "Prima Tłuszcz", "pochodzenie: ": "Jadów"},
     {"imię: ": "Janina", "nazwisko: ": "Weronika", "przychodnia: ": "Prima Tłuszcz", "pochodzenie: ": "Klembów"},
     {"imię: ": "Weronika", "Janina: ": "Weronika", "przychodnia: ": "Prima Tłuszcz", "pochodzenie: ": "Wójty"},

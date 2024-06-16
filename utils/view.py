@@ -1,5 +1,5 @@
 from tkinter import *
-from models import data_source
+# from models import data_source
 
 
 class przychodnia:
@@ -395,6 +395,179 @@ def okno_lekarze(root):
     label_pochodzenie_szczegoly_obiektu.grid(row=1, column=8)
     label_pochodzenie_szczegoly_obiektu_wartosc.grid(row=1, column=9)
 
+
+class Pacjent:
+    def __init__(self, Imie, Nazwisko, Przychodnia, Lokalizacja):
+        self.Imie = Imie
+        self.Nazwisko = Nazwisko
+        self.Przychodnia = Przychodnia
+        self.Lokalizacja = Lokalizacja
+
+
+Pacjenci = []
+def lista_pacjentow(listbox_lista_Pacjentow):
+    listbox_lista_Pacjentow.delete(0, END)
+    for idx, Pacjent in enumerate(Pacjenci):
+        listbox_lista_Pacjentow.insert(idx,
+                                        f'{Pacjent.Imie}  {Pacjent.Nazwisko} {Pacjent.Przychodnia} {Pacjent.Lokalizacja}')
+
+
+def dodaj_pacjenta(entry_Imie, entry_Nazwisko, entry_Przychodnia, entry_Lokalizacja, listbox_lista_Pacjentow):
+    Imie = entry_Imie.get()
+    Nazwisko = entry_Nazwisko.get()
+    Przychodnia = entry_Przychodnia.get()
+    Lokalizacja = entry_Lokalizacja.get()
+    print(Imie, Nazwisko, Przychodnia, Lokalizacja)
+    Pacjenci.append(Pacjent(Imie, Nazwisko, Przychodnia, Lokalizacja))
+    lista_pacjentow(listbox_lista_Pacjentow)
+
+    entry_Imie.delete(0, END)
+    entry_Nazwisko.delete(0, END)
+    entry_Przychodnia.delete(0, END)
+    entry_Lokalizacja.delete(0, END)
+
+    entry_Imie.focus()
+
+
+def usun_pacjenta(listbox_lista_Pacjentow):
+    i = listbox_lista_Pacjentow.index(ACTIVE)
+    print(i)
+    Pacjenci.pop(i)
+    lista_pacjentow(listbox_lista_Pacjentow)
+
+
+def pokaz_szczegoly_pacjenta(listbox_lista_Pacjentow, label_Imie_szczegoly_obiektu_wartosc,
+                               label_Nazwisko_szczegoly_obiektu_wartosc, label_Przychodnia_szczegoly_obiektu_wartosc,
+                               label_Lokalizacja_szczegoly_obiektu_wartosc):
+    i = listbox_lista_Pacjentow.index(ACTIVE)
+    Imie = Pacjenci[i].Imie
+    label_Imie_szczegoly_obiektu_wartosc.config(text=Imie)
+    Nazwisko = Pacjenci[i].Nazwisko
+    label_Nazwisko_szczegoly_obiektu_wartosc.config(text=Nazwisko)
+    Przychodnia = Pacjenci[i].Przychodnia
+    label_Przychodnia_szczegoly_obiektu_wartosc.config(text=Przychodnia)
+    Lokalizacja = Pacjenci[i].Lokalizacja
+    label_Lokalizacja_szczegoly_obiektu_wartosc.config(text=Lokalizacja)
+
+
+def edytuj_pacjenta(listbox_lista_Pacjentow, entry_Imie, entry_Nazwisko, entry_Przychodnia, entry_Lokalizacja,
+                       button_dodaj_pacjenta):
+    i = listbox_lista_Pacjentow.index(ACTIVE)
+    entry_Imie.insert(0, Pacjenci[i].Imie)
+    entry_Nazwisko.insert(0, Pacjenci[i].Nazwisko)
+    entry_Przychodnia.insert(0, Pacjenci[i].Przychodnia)
+    entry_Lokalizacja.insert(0, Pacjenci[i].Lokalizacja)
+
+    button_dodaj_pacjenta.config(text="Zapisz zmiany",
+                                    command=lambda: aktualizuj_pacjenta(i, entry_Imie, entry_Nazwisko,
+                                                                           entry_Przychodnia, entry_Lokalizacja,
+                                                                           button_dodaj_pacjenta,
+                                                                           listbox_lista_Pacjentow))
+
+
+def aktualizuj_pacjenta(i, entry_Imie, entry_Nazwisko, entry_Przychodnia, entry_Lokalizacja, button_dodaj_pacjenta,
+                           listbox_lista_Pacjentow):
+    Pacjenci[i].Imie = entry_Imie.get()
+    Pacjenci[i].Nazwisko = entry_Nazwisko.get()
+    Pacjenci[i].Przychodnia = entry_Przychodnia.get()
+    Pacjenci[i].Lokalizacja = entry_Lokalizacja.get()
+    lista_pacjentow(listbox_lista_Pacjentow)
+    button_dodaj_pacjenta.config(text="Dodaj pacjenta", command=dodaj_pacjenta)
+    entry_Imie.delete(0, END)
+    entry_Nazwisko.delete(0, END)
+    entry_Przychodnia.delete(0, END)
+    entry_Lokalizacja.delete(0, END)
+    entry_Imie.focus()
+
+
+def okno_pacjenci(root):
+    Pacjenci_root = Toplevel(root)
+    Pacjenci_root.title("Lista pacjentów")
+    Pacjenci_root.geometry("1024x720")
+
+
+    # ramki do porządkowania struktury
+    ramka_lista_Pacjentow = Frame(Pacjenci_root)
+    ramka_formularz = Frame(Pacjenci_root)
+    ramka_szczegoly_obiektu = Frame(Pacjenci_root)
+
+    ramka_lista_Pacjentow.grid(row=0, column=0, padx=50)
+    ramka_formularz.grid(row=0, column=1)
+    ramka_szczegoly_obiektu.grid(row=1, column=0, columnspan=2)
+
+    # lista_placowek
+    label_lista_Pacjentow = Label(ramka_lista_Pacjentow, text="Lista pacjentów: ")
+    listbox_lista_Pacjentow = Listbox(ramka_lista_Pacjentow, width=50)
+    button_pokaz_szczegoly = Button(ramka_lista_Pacjentow, text="Pokaż informacje o pacjencie: ",
+                                    command=lambda: pokaz_szczegoly_pacjenta(listbox_lista_Pacjentow,
+                                                                               label_Imie_szczegoly_obiektu_wartosc,
+                                                                               label_Nazwisko_szczegoly_obiektu_wartosc,
+                                                                               label_Przychodnia_szczegoly_obiektu_wartosc,
+                                                                               label_Lokalizacja_szczegoly_obiektu_wartosc))
+    button_usun_pacjenta = Button(ramka_lista_Pacjentow, text='Usuń pacjenta',
+                                command=lambda: usun_pacjenta(listbox_lista_Pacjentow))
+    button_edytuj_pacjenta = Button(ramka_lista_Pacjentow, text='Edytuj informacje o pacjencie',
+                                   command=lambda: edytuj_pacjenta(listbox_lista_Pacjentow, entry_Imie,
+                                                                      entry_Nazwisko, entry_Przychodnia,
+                                                                      entry_Lokalizacja, button_dodaj_pacjenta))
+
+    label_lista_Pacjentow.grid(row=0, column=0, columnspan=3)
+    listbox_lista_Pacjentow.grid(row=1, column=0, columnspan=3)
+    button_pokaz_szczegoly.grid(row=2, column=0)
+    button_usun_pacjenta.grid(row=2, column=1)
+    button_edytuj_pacjenta.grid(row=2, column=2)
+
+    # formularz
+    label_formularz = Label(ramka_formularz, text="Formularz")
+    label_Imie = Label(ramka_formularz, text="Imię: ")
+    label_Nazwisko = Label(ramka_formularz, text="Nazwisko: ")
+    label_Przychodnia = Label(ramka_formularz, text="Przychodnia: ")
+    label_Lokalizacja = Label(ramka_formularz, text="Lokalizacja")
+
+    entry_Imie = Entry(ramka_formularz)
+    entry_Nazwisko = Entry(ramka_formularz)
+    entry_Przychodnia = Entry(ramka_formularz)
+    entry_Lokalizacja = Entry(ramka_formularz)
+
+    label_formularz.grid(row=0, column=0, columnspan=2)
+    label_Imie.grid(row=1, column=0, sticky=W)
+    label_Nazwisko.grid(row=2, column=0, sticky=W)
+    label_Przychodnia.grid(row=3, column=0, sticky=W)
+    label_Lokalizacja.grid(row=4, column=0, sticky=W)
+
+    entry_Imie.grid(row=1, column=1)
+    entry_Nazwisko.grid(row=2, column=1)
+    entry_Przychodnia.grid(row=3, column=1)
+    entry_Lokalizacja.grid(row=4, column=1)
+
+    button_dodaj_pacjenta = Button(ramka_formularz, text="Dodaj pacjenta",
+                                      command=lambda: dodaj_pacjenta(entry_Imie, entry_Nazwisko, entry_Przychodnia,
+                                                                        entry_Lokalizacja, listbox_lista_Pacjentow))
+    button_dodaj_pacjenta.grid(row=5, column=1, columnspan=2)
+
+    # szczegoly obiektu
+
+    label_szczegoly_obiektu = Label(ramka_szczegoly_obiektu, text="Szczegóły przychodni: ")
+    label_Imie_szczegoly_obiektu = Label(ramka_szczegoly_obiektu, text="Imię: ")
+    label_Nazwisko_szczegoly_obiektu = Label(ramka_szczegoly_obiektu, text="Nazwisko: ")
+    label_Przychodnia_szczegoly_obiektu = Label(ramka_szczegoly_obiektu, text="Przychodnia: ")
+    label_Lokalizacja_szczegoly_obiektu = Label(ramka_szczegoly_obiektu, text="Lokalizacja: ")
+
+    label_Imie_szczegoly_obiektu_wartosc = Label(ramka_szczegoly_obiektu, text="...")
+    label_Nazwisko_szczegoly_obiektu_wartosc = Label(ramka_szczegoly_obiektu, text="...")
+    label_Przychodnia_szczegoly_obiektu_wartosc = Label(ramka_szczegoly_obiektu, text="...")
+    label_Lokalizacja_szczegoly_obiektu_wartosc = Label(ramka_szczegoly_obiektu, text="...")
+
+    label_szczegoly_obiektu.grid(row=0, column=0, sticky=W)
+    label_Imie_szczegoly_obiektu.grid(row=1, column=0,)
+    label_Imie_szczegoly_obiektu_wartosc.grid(row=1, column=1)
+    label_Nazwisko_szczegoly_obiektu.grid(row=1, column=2)
+    label_Nazwisko_szczegoly_obiektu_wartosc.grid(row=1, column=3)
+    label_Przychodnia_szczegoly_obiektu.grid(row=1, column=4)
+    label_Przychodnia_szczegoly_obiektu_wartosc.grid(row=1, column=5)
+    label_Lokalizacja_szczegoly_obiektu.grid(row=1, column=6)
+    label_Lokalizacja_szczegoly_obiektu_wartosc.grid(row=1, column=7)
+
 def logowanie():
     while True:
         login = input("Podaj login: ")
@@ -427,7 +600,7 @@ def logowanie():
             button2.grid(row=1, column=1)
 
             button3 = Button(root, text="Lista pacjentów",
-                             command=lambda: okno_przychodnie(root))
+                             command=lambda: okno_pacjenci(root))
             button3.grid(row=1, column=2)
 
             root.mainloop()
