@@ -1,4 +1,9 @@
 from tkinter import *
+import requests
+import tkintermapview
+from bs4 import BeautifulSoup
+
+
 # from models import data_source
 
 
@@ -114,7 +119,6 @@ def okno_przychodnie(root):
     przychodnie_root.title("Lista przychodni")
     przychodnie_root.geometry("1024x720")
 
-
     # ramki do porządkowania struktury
     ramka_lista_przychodni = Frame(przychodnie_root)
     ramka_formularz = Frame(przychodnie_root)
@@ -188,7 +192,7 @@ def okno_przychodnie(root):
     label_lokalizacja_szczegoly_obiektu_wartosc = Label(ramka_szczegoly_obiektu, text="...")
 
     label_szczegoly_obiektu.grid(row=0, column=0, sticky=W)
-    label_nazwa_szczegoly_obiektu.grid(row=1, column=0,)
+    label_nazwa_szczegoly_obiektu.grid(row=1, column=0, )
     label_nazwa_szczegoly_obiektu_wartosc.grid(row=1, column=1)
     label_doktorzy_szczegoly_obiektu.grid(row=1, column=2)
     label_doktorzy_szczegoly_obiektu_wartosc.grid(row=1, column=3)
@@ -196,8 +200,6 @@ def okno_przychodnie(root):
     label_pacjenci_szczegoly_obiektu_wartosc.grid(row=1, column=5)
     label_lokalizacja_szczegoly_obiektu.grid(row=1, column=6)
     label_lokalizacja_szczegoly_obiektu_wartosc.grid(row=1, column=7)
-
-
 
 
 class lekarz:
@@ -208,7 +210,10 @@ class lekarz:
         self.przynalezni_pacjenci = przynalezni_pacjenci
         self.pochodzenie = pochodzenie
 
+
 lekarze = []
+
+
 def lista_lekarzy(listbox_lista_lekarzy):
     listbox_lista_lekarzy.delete(0, END)
     for idx, lekarz in enumerate(lekarze):
@@ -405,11 +410,13 @@ class Pacjent:
 
 
 Pacjenci = []
+
+
 def lista_pacjentow(listbox_lista_Pacjentow):
     listbox_lista_Pacjentow.delete(0, END)
     for idx, Pacjent in enumerate(Pacjenci):
         listbox_lista_Pacjentow.insert(idx,
-                                        f'{Pacjent.Imie}  {Pacjent.Nazwisko} {Pacjent.Przychodnia} {Pacjent.Lokalizacja}')
+                                       f'{Pacjent.Imie}  {Pacjent.Nazwisko} {Pacjent.Przychodnia} {Pacjent.Lokalizacja}')
 
 
 def dodaj_pacjenta(entry_Imie, entry_Nazwisko, entry_Przychodnia, entry_Lokalizacja, listbox_lista_Pacjentow):
@@ -437,8 +444,8 @@ def usun_pacjenta(listbox_lista_Pacjentow):
 
 
 def pokaz_szczegoly_pacjenta(listbox_lista_Pacjentow, label_Imie_szczegoly_obiektu_wartosc,
-                               label_Nazwisko_szczegoly_obiektu_wartosc, label_Przychodnia_szczegoly_obiektu_wartosc,
-                               label_Lokalizacja_szczegoly_obiektu_wartosc):
+                             label_Nazwisko_szczegoly_obiektu_wartosc, label_Przychodnia_szczegoly_obiektu_wartosc,
+                             label_Lokalizacja_szczegoly_obiektu_wartosc):
     i = listbox_lista_Pacjentow.index(ACTIVE)
     Imie = Pacjenci[i].Imie
     label_Imie_szczegoly_obiektu_wartosc.config(text=Imie)
@@ -451,7 +458,7 @@ def pokaz_szczegoly_pacjenta(listbox_lista_Pacjentow, label_Imie_szczegoly_obiek
 
 
 def edytuj_pacjenta(listbox_lista_Pacjentow, entry_Imie, entry_Nazwisko, entry_Przychodnia, entry_Lokalizacja,
-                       button_dodaj_pacjenta):
+                    button_dodaj_pacjenta):
     i = listbox_lista_Pacjentow.index(ACTIVE)
     entry_Imie.insert(0, Pacjenci[i].Imie)
     entry_Nazwisko.insert(0, Pacjenci[i].Nazwisko)
@@ -459,14 +466,14 @@ def edytuj_pacjenta(listbox_lista_Pacjentow, entry_Imie, entry_Nazwisko, entry_P
     entry_Lokalizacja.insert(0, Pacjenci[i].Lokalizacja)
 
     button_dodaj_pacjenta.config(text="Zapisz zmiany",
-                                    command=lambda: aktualizuj_pacjenta(i, entry_Imie, entry_Nazwisko,
-                                                                           entry_Przychodnia, entry_Lokalizacja,
-                                                                           button_dodaj_pacjenta,
-                                                                           listbox_lista_Pacjentow))
+                                 command=lambda: aktualizuj_pacjenta(i, entry_Imie, entry_Nazwisko,
+                                                                     entry_Przychodnia, entry_Lokalizacja,
+                                                                     button_dodaj_pacjenta,
+                                                                     listbox_lista_Pacjentow))
 
 
 def aktualizuj_pacjenta(i, entry_Imie, entry_Nazwisko, entry_Przychodnia, entry_Lokalizacja, button_dodaj_pacjenta,
-                           listbox_lista_Pacjentow):
+                        listbox_lista_Pacjentow):
     Pacjenci[i].Imie = entry_Imie.get()
     Pacjenci[i].Nazwisko = entry_Nazwisko.get()
     Pacjenci[i].Przychodnia = entry_Przychodnia.get()
@@ -485,7 +492,6 @@ def okno_pacjenci(root):
     Pacjenci_root.title("Lista pacjentów")
     Pacjenci_root.geometry("1024x720")
 
-
     # ramki do porządkowania struktury
     ramka_lista_Pacjentow = Frame(Pacjenci_root)
     ramka_formularz = Frame(Pacjenci_root)
@@ -500,16 +506,16 @@ def okno_pacjenci(root):
     listbox_lista_Pacjentow = Listbox(ramka_lista_Pacjentow, width=50)
     button_pokaz_szczegoly = Button(ramka_lista_Pacjentow, text="Pokaż informacje o pacjencie: ",
                                     command=lambda: pokaz_szczegoly_pacjenta(listbox_lista_Pacjentow,
-                                                                               label_Imie_szczegoly_obiektu_wartosc,
-                                                                               label_Nazwisko_szczegoly_obiektu_wartosc,
-                                                                               label_Przychodnia_szczegoly_obiektu_wartosc,
-                                                                               label_Lokalizacja_szczegoly_obiektu_wartosc))
+                                                                             label_Imie_szczegoly_obiektu_wartosc,
+                                                                             label_Nazwisko_szczegoly_obiektu_wartosc,
+                                                                             label_Przychodnia_szczegoly_obiektu_wartosc,
+                                                                             label_Lokalizacja_szczegoly_obiektu_wartosc))
     button_usun_pacjenta = Button(ramka_lista_Pacjentow, text='Usuń pacjenta',
-                                command=lambda: usun_pacjenta(listbox_lista_Pacjentow))
+                                  command=lambda: usun_pacjenta(listbox_lista_Pacjentow))
     button_edytuj_pacjenta = Button(ramka_lista_Pacjentow, text='Edytuj informacje o pacjencie',
-                                   command=lambda: edytuj_pacjenta(listbox_lista_Pacjentow, entry_Imie,
-                                                                      entry_Nazwisko, entry_Przychodnia,
-                                                                      entry_Lokalizacja, button_dodaj_pacjenta))
+                                    command=lambda: edytuj_pacjenta(listbox_lista_Pacjentow, entry_Imie,
+                                                                    entry_Nazwisko, entry_Przychodnia,
+                                                                    entry_Lokalizacja, button_dodaj_pacjenta))
 
     label_lista_Pacjentow.grid(row=0, column=0, columnspan=3)
     listbox_lista_Pacjentow.grid(row=1, column=0, columnspan=3)
@@ -541,8 +547,8 @@ def okno_pacjenci(root):
     entry_Lokalizacja.grid(row=4, column=1)
 
     button_dodaj_pacjenta = Button(ramka_formularz, text="Dodaj pacjenta",
-                                      command=lambda: dodaj_pacjenta(entry_Imie, entry_Nazwisko, entry_Przychodnia,
-                                                                        entry_Lokalizacja, listbox_lista_Pacjentow))
+                                   command=lambda: dodaj_pacjenta(entry_Imie, entry_Nazwisko, entry_Przychodnia,
+                                                                  entry_Lokalizacja, listbox_lista_Pacjentow))
     button_dodaj_pacjenta.grid(row=5, column=1, columnspan=2)
 
     # szczegoly obiektu
@@ -559,7 +565,7 @@ def okno_pacjenci(root):
     label_Lokalizacja_szczegoly_obiektu_wartosc = Label(ramka_szczegoly_obiektu, text="...")
 
     label_szczegoly_obiektu.grid(row=0, column=0, sticky=W)
-    label_Imie_szczegoly_obiektu.grid(row=1, column=0,)
+    label_Imie_szczegoly_obiektu.grid(row=1, column=0, )
     label_Imie_szczegoly_obiektu_wartosc.grid(row=1, column=1)
     label_Nazwisko_szczegoly_obiektu.grid(row=1, column=2)
     label_Nazwisko_szczegoly_obiektu_wartosc.grid(row=1, column=3)
@@ -567,6 +573,211 @@ def okno_pacjenci(root):
     label_Przychodnia_szczegoly_obiektu_wartosc.grid(row=1, column=5)
     label_Lokalizacja_szczegoly_obiektu.grid(row=1, column=6)
     label_Lokalizacja_szczegoly_obiektu_wartosc.grid(row=1, column=7)
+
+
+pacjenci = []
+
+
+class Pacjent:
+    def __init__(self, imie, nazwisko, przychodnia, lokalizacja):
+        self.imie = imie
+        self.nazwisko = nazwisko
+        self.przychodnia = przychodnia
+        self.lokalizacja = lokalizacja
+        self.wspolrzedne = self.get_wspolrzedne()
+        self.marker = None
+
+    def get_wspolrzedne(self) -> list:
+        url: str = f'https://pl.wikipedia.org/wiki/{self.lokalizacja}'
+        response = requests.get(url)
+        response_html = BeautifulSoup(response.text, 'html.parser')
+        return [
+            float(response_html.select('.latitude')[1].text.replace(",", ".")),
+            float(response_html.select('.longitude')[1].text.replace(",", "."))
+        ]
+
+    def usun_marker(self):
+        if self.marker:
+            self.marker.delete()
+
+
+def lista_pacjentow(listbox_lista_pacjentow, map_widget):
+    listbox_lista_pacjentow.delete(0, END)
+    for idx, pacjent in enumerate(pacjenci):
+        listbox_lista_pacjentow.insert(idx,
+                                       f'{pacjent.imie}  {pacjent.nazwisko} {pacjent.przychodnia} {pacjent.lokalizacja}')
+        pacjent.marker = map_widget.set_marker(pacjent.wspolrzedne[0], pacjent.wspolrzedne[1],
+                                               text=f"{pacjent.nazwa}")
+
+
+def dodaj_pacjenta(entry_imie, entry_nazwisko, entry_przychodnia, entry_lokalizacja, listbox_lista_pacjentow,
+                   map_widget):
+    imie = entry_imie.get()
+    nazwisko = entry_nazwisko.get()
+    przychodnia = entry_przychodnia.get()
+    lokalizacja = entry_lokalizacja.get()
+    pacjenci.append(Pacjent(imie, nazwisko, przychodnia, lokalizacja))
+    lista_pacjentow(listbox_lista_pacjentow, map_widget)
+
+    entry_imie.delete(0, END)
+    entry_nazwisko.delete(0, END)
+    entry_przychodnia.delete(0, END)
+    entry_lokalizacja.delete(0, END)
+    entry_imie.focus()
+
+
+def usun_pacjenta(listbox_lista_pacjentow, map_widget):
+    i = listbox_lista_pacjentow.curselection()[0]
+    pacjenci[i].marker.delete()
+    pacjenci.pop(i)
+    lista_pacjentow(listbox_lista_pacjentow, map_widget)
+
+
+def pokaz_szczegoly_pacjenta(listbox_lista_pacjentow, label_imie_szczegoly_obiektu_wartosc,
+                             label_nazwisko_szczegoly_obiektu_wartosc, label_przychodnia_szczegoly_obiektu_wartosc,
+                             label_lokalizacja_szczegoly_obiektu_wartosc, map_widget):
+    i = listbox_lista_pacjentow.curselection()[0]
+    pacjent = pacjenci[i]
+    label_imie_szczegoly_obiektu_wartosc.config(text=pacjent.nazwa)
+    label_nazwisko_szczegoly_obiektu_wartosc.config(text=pacjent.doktorzy)
+    label_przychodnia_szczegoly_obiektu_wartosc.config(text=pacjent.pacjenci)
+    label_lokalizacja_szczegoly_obiektu_wartosc.config(text=pacjent.lokalizacja)
+    map_widget.set_position(pacjent.wspolrzedne[0], pacjent.wspolrzedne[1])
+    map_widget.set_zoom(12)
+
+
+def edytuj_pacjenta(listbox_lista_pacjentow, entry_imie, entry_nazwisko, entry_przychodnia, entry_lokalizacja,
+                    button_dodaj_pacjenta, map_widget):
+    i = listbox_lista_pacjentow.curselection()[0]
+    pacjent = pacjenci[i]
+    pacjent.usun_marker()
+    entry_imie.insert(0, pacjent.imie)
+    entry_nazwisko.insert(0, pacjent.nazwisko)
+    entry_przychodnia.insert(0, pacjent.przychodnia)
+    entry_lokalizacja.insert(0, pacjent.lokalizacja)
+    button_dodaj_pacjenta.config(text="Zapisz zmiany",
+                                 command=lambda: aktualizuj_pacjenta(i, entry_imie, entry_nazwisko,
+                                                                     entry_przychodnia, entry_lokalizacja,
+                                                                     button_dodaj_pacjenta,
+                                                                     listbox_lista_pacjentow, map_widget))
+
+
+def aktualizuj_pacjenta(i, entry_imie, entry_nazwisko, entry_przychodnia, entry_lokalizacja, button_dodaj_pacjenta,
+                        listbox_lista_pacjentow, map_widget):
+    pacjent = pacjenci[i]
+    pacjent.imie = entry_imie.get()
+    pacjent.nazwisko = entry_nazwisko.get()
+    pacjent.przychodnia = entry_przychodnia.get()
+    pacjent.lokalizacja = entry_lokalizacja.get()
+    pacjent.wspolrzedne = pacjent.get_wspolrzedne()
+    lista_pacjentow(listbox_lista_pacjentow, map_widget)
+    button_dodaj_pacjenta.config(text="Dodaj przychodnię",
+                                 command=lambda: dodaj_pacjenta(entry_imie, entry_nazwisko, entry_przychodnia,
+                                                                entry_lokalizacja, listbox_lista_pacjentow,
+                                                                map_widget))
+    entry_imie.delete(0, END)
+    entry_nazwisko.delete(0, END)
+    entry_przychodnia.delete(0, END)
+    entry_lokalizacja.delete(0, END)
+    entry_imie.focus()
+
+
+def okno_pacjenci(root):
+    global map_widget
+    pacjenci_root = Toplevel(root)
+    pacjenci_root.title("Lista pacjentów")
+    pacjenci_root.geometry("1024x720")
+
+    # ramki do porządkowania struktury
+    ramka_lista_pacjentow = Frame(pacjenci_root)
+    ramka_formularz = Frame(pacjenci_root)
+    ramka_szczegoly_obiektu = Frame(pacjenci_root)
+
+    ramka_lista_pacjentow.grid(row=0, column=0, padx=50)
+    ramka_formularz.grid(row=0, column=1)
+    ramka_szczegoly_obiektu.grid(row=1, column=0, columnspan=2)
+
+    # lista_placowek
+    label_lista_pacjentow = Label(ramka_lista_pacjentow, text="Lista przychodni: ")
+    listbox_lista_pacjentow = Listbox(ramka_lista_pacjentow, width=50)
+    button_pokaz_szczegoly = Button(ramka_lista_pacjentow, text="Pokaż szczegóły",
+                                    command=lambda: pokaz_szczegoly_pacjenta(listbox_lista_pacjentow,
+                                                                             label_imie_szczegoly_obiektu_wartosc,
+                                                                             label_nazwisko_szczegoly_obiektu_wartosc,
+                                                                             label_przychodnia_szczegoly_obiektu_wartosc,
+                                                                             label_lokalizacja_szczegoly_obiektu_wartosc,
+                                                                             map_widget))
+    button_usun_pacjenta = Button(ramka_lista_pacjentow, text='Usuń pacjenta',
+                                  command=lambda: usun_pacjenta(listbox_lista_pacjentow, map_widget))
+    button_edytuj_pacjenta = Button(ramka_lista_pacjentow, text='Edytuj pacjenta',
+                                    command=lambda: edytuj_pacjenta(listbox_lista_pacjentow, entry_imie,
+                                                                    entry_nazwisko, entry_przychodnia,
+                                                                    entry_lokalizacja, button_dodaj_pacjenta,
+                                                                    map_widget))
+
+    label_lista_pacjentow.grid(row=0, column=0, columnspan=3)
+    listbox_lista_pacjentow.grid(row=1, column=0, columnspan=3)
+    button_pokaz_szczegoly.grid(row=2, column=0)
+    button_usun_pacjenta.grid(row=2, column=1)
+    button_edytuj_pacjenta.grid(row=2, column=2)
+
+    # formularz
+    label_formularz = Label(ramka_formularz, text="Formularz")
+    label_imie = Label(ramka_formularz, text="Imię: ")
+    label_nazwisko = Label(ramka_formularz, text="Nazwisko: ")
+    label_przychodnia = Label(ramka_formularz, text="Przychodnia: ")
+    label_lokalizacja = Label(ramka_formularz, text="Lokalizacja: ")
+
+    entry_imie = Entry(ramka_formularz)
+    entry_nazwisko = Entry(ramka_formularz)
+    entry_przychodnia = Entry(ramka_formularz)
+    entry_lokalizacja = Entry(ramka_formularz)
+
+    label_formularz.grid(row=0, column=0, columnspan=2)
+    label_imie.grid(row=1, column=0, sticky=W)
+    label_nazwisko.grid(row=2, column=0, sticky=W)
+    label_przychodnia.grid(row=3, column=0, sticky=W)
+    label_lokalizacja.grid(row=4, column=0, sticky=W)
+
+    entry_imie.grid(row=1, column=1)
+    entry_nazwisko.grid(row=2, column=1)
+    entry_przychodnia.grid(row=3, column=1)
+    entry_lokalizacja.grid(row=4, column=1)
+
+    button_dodaj_pacjenta = Button(ramka_formularz, text="Dodaj pacjenta",
+                                   command=lambda: dodaj_pacjenta(entry_imie, entry_nazwisko, entry_przychodnia,
+                                                                  entry_lokalizacja, listbox_lista_pacjentow,
+                                                                  map_widget))
+    button_dodaj_pacjenta.grid(row=5, column=1, columnspan=2)
+
+    # szczegoly obiektu
+    label_szczegoly_obiektu = Label(ramka_szczegoly_obiektu, text="Informacje o pacjencie: ")
+    label_imie_szczegoly_obiektu = Label(ramka_szczegoly_obiektu, text="Imię: ")
+    label_nazwisko_szczegoly_obiektu = Label(ramka_szczegoly_obiektu, text="Nazwisko: ")
+    label_przychodnia_szczegoly_obiektu = Label(ramka_szczegoly_obiektu, text="Przychodnia: ")
+    label_lokalizacja_szczegoly_obiektu = Label(ramka_szczegoly_obiektu, text="Lokalizacja: ")
+
+    label_imie_szczegoly_obiektu_wartosc = Label(ramka_szczegoly_obiektu, text="...")
+    label_nazwisko_szczegoly_obiektu_wartosc = Label(ramka_szczegoly_obiektu, text="...")
+    label_przychodnia_szczegoly_obiektu_wartosc = Label(ramka_szczegoly_obiektu, text="...")
+    label_lokalizacja_szczegoly_obiektu_wartosc = Label(ramka_szczegoly_obiektu, text="...")
+
+    label_szczegoly_obiektu.grid(row=0, column=0, sticky=W)
+    label_imie_szczegoly_obiektu.grid(row=1, column=0, )
+    label_imie_szczegoly_obiektu_wartosc.grid(row=1, column=1)
+    label_nazwisko_szczegoly_obiektu.grid(row=1, column=2)
+    label_nazwisko_szczegoly_obiektu_wartosc.grid(row=1, column=3)
+    label_przychodnia_szczegoly_obiektu.grid(row=1, column=4)
+    label_przychodnia_szczegoly_obiektu_wartosc.grid(row=1, column=5)
+    label_lokalizacja_szczegoly_obiektu.grid(row=1, column=6)
+    label_lokalizacja_szczegoly_obiektu_wartosc.grid(row=1, column=7)
+
+    global map_widget
+    map_widget = tkintermapview.TkinterMapView(ramka_szczegoly_obiektu, width=900, height=500)
+    map_widget.set_position(52.2, 21.0)
+    map_widget.set_zoom(8)
+    map_widget.grid(row=2, column=0, columnspan=8)
+
 
 def logowanie():
     while True:
